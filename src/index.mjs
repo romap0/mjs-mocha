@@ -37,6 +37,7 @@ const runTest = file => new Promise((resolve, reject) => {
 
   const test = cp.spawn('node', [
     '--experimental-modules',
+    '--experimental-worker',
     '--loader',
     path.join(__dirname, 'src', 'loader.mjs'),
     testFilePath,
@@ -65,9 +66,7 @@ const runTest = file => new Promise((resolve, reject) => {
       const mochaFile = fs.readFileSync(path.join(__dirname, 'src', 'mocha.mjs'), 'utf8');
       const mochaFileLinesCount = mochaFile.split('\n').length;
 
-      const formatedOutput = output.replace(new RegExp(`(${testFilePath}:)(.+):`), (match, fileName, lineNumber) => {
-        return `${file}:${+lineNumber - mochaFileLinesCount + 1}:`
-      });
+      const formatedOutput = output.replace(new RegExp(`(${testFilePath}:)(.+):`), (match, fileName, lineNumber) => `${file}:${+lineNumber - mochaFileLinesCount + 1}:`);
 
       reject(formatedOutput);
     }
